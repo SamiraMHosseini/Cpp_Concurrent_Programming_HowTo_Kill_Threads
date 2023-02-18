@@ -146,9 +146,9 @@ public:
 	D(const char* const name) :
 		BannerBase(name), name(name), source("<0><1><2><3><4><5><6><7><8>")
 	{
-		
-		this->dest = new char[strlen(this->source)+1];
-		memcpy(this->dest, this->source, strlen(this->source)+1);
+
+		this->dest = new char[strlen(this->source) + 1];
+		memcpy(this->dest, this->source, strlen(this->source) + 1);
 	}
 	void operator() (SharedResource& sharedReference)
 	{
@@ -165,23 +165,23 @@ public:
 			{
 				break;
 			}
-			
-			*(this->dest + len+index ) = '\0'; //OR *(this->dest + len + index) = 0;
+
+			*(this->dest + len + index) = '\0'; //OR *(this->dest + len + index) = 0;
 			Debug::out("%s \n", this->dest);
 			index -= MINIMUM_LEN;
-			if (strlen(this->dest)<= MINIMUM_LEN)
+			if (strlen(this->dest) <= MINIMUM_LEN)
 			{
 				index = 0;
 				memcpy(this->dest, this->source, len);
 			}
 		}
-		
+
 		delete dest;
 	}
 private:
 	const char* const name;
 	const char* const source;
-	const int MINIMUM_LEN = 3;
+	const size_t MINIMUM_LEN = 3;
 	char* dest;
 };
 
