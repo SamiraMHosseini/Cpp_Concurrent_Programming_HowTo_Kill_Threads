@@ -21,14 +21,13 @@ public:
 	A& operator=(const A&) = default;
 	~A() = default;
 	A(const char* const name) :
-		BannerBase(name), counter(0), name(name)
+		BannerBase(name), counter(0)
 	{
 
 	}
 	void operator ()(SharedResource& sharedResource) //Functor 
 	{
 		START_BANNER;
-		Debug::SetCurrentName(name);
 		while (true)
 		{
 
@@ -49,7 +48,7 @@ public:
 
 private:
 	int counter;
-	const char* const name;
+
 };
 class B : public BannerBase
 {
@@ -59,14 +58,14 @@ public:
 	B(const B&) = default;
 	~B() = default;
 	B(const char* const name) :
-		BannerBase(name), counter(0x10000), name(name)
+		BannerBase(name), counter(0x10000)
 	{
 
 	}
 	void operator()(SharedResource& sharedResource)
 	{
 		START_BANNER;
-		Debug::SetCurrentName(name);
+
 		while (true)
 		{
 
@@ -85,7 +84,7 @@ public:
 
 private:
 	unsigned int counter;
-	const char* const name;
+
 
 };
 
@@ -99,7 +98,7 @@ public:
 	C& operator=(const C&) = default;
 	~C() = default;
 	C(const char* const name) :
-		BannerBase(name), name(name), strings{ "apple", "orange" ,"banana", "lemon" }
+		BannerBase(name), strings{ "apple", "orange" ,"banana", "lemon" }
 	{
 
 	}
@@ -109,7 +108,6 @@ public:
 
 		START_BANNER;
 		int index{ 0 };
-		Debug::SetCurrentName(name);
 		while (true)
 		{
 
@@ -131,7 +129,7 @@ public:
 
 private:
 
-	const char* const name;
+
 	const char* const strings[4];
 };
 
@@ -144,17 +142,19 @@ public:
 	~D() = default;
 
 	D(const char* const name) :
-		BannerBase(name), name(name), source("<0><1><2><3><4><5><6><7><8>")
+		BannerBase(name)
 	{
 
-		this->dest = new char[strlen(this->source) + 1];
-		memcpy(this->dest, this->source, strlen(this->source) + 1);
+		
+		
 	}
 	void operator() (SharedResource& sharedReference)
 	{
 		START_BANNER;
-		Debug::SetCurrentName(name);
-		size_t len{ strlen(this->source) };
+		const char* const sourceStr = "<0><1><2><3><4><5><6><7><8>";
+		char* destStr = new char[strlen(sourceStr) + 1];
+		memcpy(destStr, sourceStr, strlen(sourceStr) + 1);
+		size_t len{ strlen(sourceStr) };
 		int index{ 0 };
 		while (true)
 		{
@@ -166,23 +166,25 @@ public:
 				break;
 			}
 
-			*(this->dest + len + index) = '\0'; //OR *(this->dest + len + index) = 0;
-			Debug::out("%s \n", this->dest);
-			index -= MINIMUM_LEN;
-			if (strlen(this->dest) <= MINIMUM_LEN)
+			
+			Debug::out("%s \n", destStr);
+			if (strlen(destStr) <= MINIMUM_LEN)
 			{
-				index = 0;
-				memcpy(this->dest, this->source, len);
+				index = 3;
+				memcpy(destStr, sourceStr, len);
 			}
+			*(destStr + len + --index) = 0;
+			*(destStr + len + --index) = 0;
+			*(destStr + len + --index) = 0;
 		}
 
-		delete dest;
+		delete destStr;
 	}
 private:
-	const char* const name;
-	const char* const source;
+
+	
 	const size_t MINIMUM_LEN = 3;
-	char* dest;
+	
 };
 
 int main()
